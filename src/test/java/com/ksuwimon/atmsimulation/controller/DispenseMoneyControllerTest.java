@@ -96,14 +96,12 @@ public class DispenseMoneyControllerTest {
 		BankNotesAmountBean actualResult = atmSimulationService.dispenseMoney(730);
 	
 		// Bean will be null in case of invalid combination
-		BankNotesAmountBean expectedResult = null;
-		
-		Assert.assertEquals(expectedResult, actualResult);
+		Assert.assertNull(actualResult);
 
 		// Remaining Bank Note in ATM after dispensing money
 		actualResult = atmSimulationService.getRemainingBankNotes();
 		
-		expectedResult = new BankNotesAmountBean();
+		BankNotesAmountBean expectedResult = new BankNotesAmountBean();
 		expectedResult.setOneThousandBathNote(10);
 		expectedResult.setFiveHundredBathNote(10);
 		expectedResult.setOneHundredBathNote(10);
@@ -126,14 +124,12 @@ public class DispenseMoneyControllerTest {
 		BankNotesAmountBean actualResult = atmSimulationService.dispenseMoney(20000);
 	
 		// Bean will be null in case of invalid combination
-		BankNotesAmountBean expectedResult = null;
+		Assert.assertNull(actualResult);
 		
-		Assert.assertEquals(expectedResult, actualResult);
-
 		// Remaining Bank Note in ATM after dispensing money
 		actualResult = atmSimulationService.getRemainingBankNotes();
 		
-		expectedResult = new BankNotesAmountBean();
+		BankNotesAmountBean expectedResult = new BankNotesAmountBean();
 		expectedResult.setOneThousandBathNote(10);
 		expectedResult.setFiveHundredBathNote(10);
 		expectedResult.setOneHundredBathNote(10);
