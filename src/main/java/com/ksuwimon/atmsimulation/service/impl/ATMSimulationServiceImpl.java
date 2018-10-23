@@ -8,13 +8,22 @@ import com.ksuwimon.atmsimulation.service.ATMSimulationService;
 @Service("atmSimulationService")
 public class ATMSimulationServiceImpl implements ATMSimulationService {
 
+	private BankNotesAmountBean remainingBankNoteBean = null;
+	
 	@Override
 	public BankNotesAmountBean initializeATM(int defaultNumberOfBankNote) {
-		return setInitializeBankNotesAmountBean(defaultNumberOfBankNote);
+		retriveRemainingBankNote(true, setInitializeBankNotesAmountBean(defaultNumberOfBankNote));
+		return remainingBankNoteBean;
 	}
 
 	@Override
-	public BankNotesAmountBean dispenseMoney(BankNotesAmountBean remainingBankNoteBean, int requestAmount) {
+	public BankNotesAmountBean initializeATM(BankNotesAmountBean bankNoteAmountBean) {
+		retriveRemainingBankNote(true, bankNoteAmountBean);
+		return remainingBankNoteBean;
+	}
+
+	@Override
+	public BankNotesAmountBean dispenseMoney(int requestAmount) {
 		BankNotesAmountBean requestBankNotesBean = new BankNotesAmountBean();
 		int numberOfBankNote = 0;
 		// ฿1000
@@ -55,7 +64,7 @@ public class ATMSimulationServiceImpl implements ATMSimulationService {
 				requestAmount %= 100;
 				requestAmount += (100 * (numberOfBankNote - remainingBankNoteBean.getOneHundredBathNote()));
 			}
-		}
+		} 
 		// ฿50
 		numberOfBankNote = requestAmount / 50;
 		if (requestAmount > 0 && remainingBankNoteBean.getFiftyBathNote() > 0 && 
@@ -84,6 +93,7 @@ public class ATMSimulationServiceImpl implements ATMSimulationService {
 		}
 		
 		if (requestAmount == 0) {
+			retriveRemainingBankNote(false, requestBankNotesBean);
 			return requestBankNotesBean;
 		} else {
 			return null;
@@ -91,10 +101,10 @@ public class ATMSimulationServiceImpl implements ATMSimulationService {
 	}
 
 	@Override
-	public BankNotesAmountBean resetBankNotes() {
-		return setInitializeBankNotesAmountBean(0);
+	public void resetBankNotes() {
+		remainingBankNoteBean = setInitializeBankNotesAmountBean(0);
 	}
-
+	
 	private BankNotesAmountBean setInitializeBankNotesAmountBean(int defaultNumberOfBankNote) {
 		BankNotesAmountBean initializeBean = new BankNotesAmountBean();
 		initializeBean.setOneThousandBathNote(defaultNumberOfBankNote);
@@ -103,5 +113,59 @@ public class ATMSimulationServiceImpl implements ATMSimulationService {
 		initializeBean.setFiftyBathNote(defaultNumberOfBankNote);
 		initializeBean.setTwentyBathNote(defaultNumberOfBankNote);
 		return initializeBean;
+	}
+
+//	private BankNotesAmountBean retriveRemainingBankNote(boolean isInitializeBean, BankNotesAmountBean bankNotesBean) {
+//		BankNotesAmountBean newBankNotesBean = new BankNotesAmountBean();
+//		if (isInitializeBean) {
+//			if (null == remainingBankNoteBean) {
+//				newBankNotesBean = bankNotesBean;
+//			} else {
+//				newBankNotesBean.setOneThousandBathNote(remainingBankNoteBean.getOneThousandBathNote() + bankNotesBean.getOneThousandBathNote());
+//				newBankNotesBean.setFiveHundredBathNote(remainingBankNoteBean.getFiveHundredBathNote() + bankNotesBean.getFiveHundredBathNote());
+//				newBankNotesBean.setOneHundredBathNote(remainingBankNoteBean.getOneHundredBathNote() + bankNotesBean.getOneHundredBathNote());
+//				newBankNotesBean.setFiftyBathNote(remainingBankNoteBean.getFiftyBathNote() + bankNotesBean.getFiftyBathNote());
+//				newBankNotesBean.setTwentyBathNote(remainingBankNoteBean.getTwentyBathNote() + bankNotesBean.getTwentyBathNote());
+//			}
+//		} else {
+//			if (null != bankNotesBean) {
+//				newBankNotesBean.setOneThousandBathNote(remainingBankNoteBean.getOneThousandBathNote() - bankNotesBean.getOneThousandBathNote());
+//				newBankNotesBean.setFiveHundredBathNote(remainingBankNoteBean.getFiveHundredBathNote() - bankNotesBean.getFiveHundredBathNote());
+//				newBankNotesBean.setOneHundredBathNote(remainingBankNoteBean.getOneHundredBathNote() - bankNotesBean.getOneHundredBathNote());
+//				newBankNotesBean.setFiftyBathNote(remainingBankNoteBean.getFiftyBathNote() - bankNotesBean.getFiftyBathNote());
+//				newBankNotesBean.setTwentyBathNote(remainingBankNoteBean.getTwentyBathNote() - bankNotesBean.getTwentyBathNote());
+//			} else {
+//				newBankNotesBean = remainingBankNoteBean;
+//			}
+//		}
+//		return newBankNotesBean;
+//	}
+	
+	private void retriveRemainingBankNote(boolean isInitializeBean, BankNotesAmountBean bankNotesBean) {
+		if (isInitializeBean) {
+			if (null == remainingBankNoteBean) {
+				remainingBankNoteBean = bankNotesBean;
+			} else {
+				remainingBankNoteBean.setOneThousandBathNote(remainingBankNoteBean.getOneThousandBathNote() + bankNotesBean.getOneThousandBathNote());
+				remainingBankNoteBean.setFiveHundredBathNote(remainingBankNoteBean.getFiveHundredBathNote() + bankNotesBean.getFiveHundredBathNote());
+				remainingBankNoteBean.setOneHundredBathNote(remainingBankNoteBean.getOneHundredBathNote() + bankNotesBean.getOneHundredBathNote());
+				remainingBankNoteBean.setFiftyBathNote(remainingBankNoteBean.getFiftyBathNote() + bankNotesBean.getFiftyBathNote());
+				remainingBankNoteBean.setTwentyBathNote(remainingBankNoteBean.getTwentyBathNote() + bankNotesBean.getTwentyBathNote());
+			}
+		} else {
+			if (null != bankNotesBean) {
+				remainingBankNoteBean.setOneThousandBathNote(remainingBankNoteBean.getOneThousandBathNote() - bankNotesBean.getOneThousandBathNote());
+				remainingBankNoteBean.setFiveHundredBathNote(remainingBankNoteBean.getFiveHundredBathNote() - bankNotesBean.getFiveHundredBathNote());
+				remainingBankNoteBean.setOneHundredBathNote(remainingBankNoteBean.getOneHundredBathNote() - bankNotesBean.getOneHundredBathNote());
+				remainingBankNoteBean.setFiftyBathNote(remainingBankNoteBean.getFiftyBathNote() - bankNotesBean.getFiftyBathNote());
+				remainingBankNoteBean.setTwentyBathNote(remainingBankNoteBean.getTwentyBathNote() - bankNotesBean.getTwentyBathNote());
+			} 
+		}
+//		return remainingBankNoteBean;
+	}
+
+	@Override
+	public BankNotesAmountBean getRemainingBankNotes() {
+		return remainingBankNoteBean;
 	}
 }

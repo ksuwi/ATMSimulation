@@ -4,7 +4,8 @@ import com.ksuwimon.atmsimulation.model.BankNotesAmountBean;
 
 public interface ATMSimulationService {
 	public BankNotesAmountBean initializeATM(int defaultNumberOfBankNote);
-//	public void initializeATM(BankNotesAmountBean remainingBankNoteBean, BankNotesAmountBean bankNoteAmountBean);
-	public BankNotesAmountBean dispenseMoney(BankNotesAmountBean remainingBankNoteBean, int requestAmount);
-	public BankNotesAmountBean resetBankNotes();
+	public BankNotesAmountBean initializeATM(BankNotesAmountBean bankNoteAmountBean);
+	public BankNotesAmountBean dispenseMoney(int requestAmount);
+	public BankNotesAmountBean getRemainingBankNotes();
+	public void resetBankNotes();
 }
